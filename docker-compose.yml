@@ -1,0 +1,43 @@
+version: "3.9"
+
+networks:
+  proxy:
+    name: proxy
+  internal:
+    name: internal
+    internal: true
+
+services:
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    restart: always
+
+    command:
+      - "--providers.docker=true"
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/traefik.yml:ro
+      - ./volumes/letsencrypt:/letsencrypt
+
+    networks:
+      - proxy
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: always
+
+    env_file:
+      - ./env/postgres.env
+
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+
+    networks:
+      - internal
