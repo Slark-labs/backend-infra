@@ -2,17 +2,9 @@ entryPoints:
   web:
     address: ":80"
 
-  websecure:
-    address: ":443"
-
 providers:
   docker:
     exposedByDefault: false
 
-certificatesResolvers:
-  letsencrypt:
-    acme:
-      email: you@example.com
-      storage: /letsencrypt/acme.json
-      httpChallenge:
-        entryPoint: web
+api:
+  dashboard: true
