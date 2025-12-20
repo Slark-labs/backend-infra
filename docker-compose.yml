@@ -58,6 +58,8 @@ services:
       - internal
     env_file:
       - .env
+    ports:
+      - "3000:3000"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app1.rule=Host(`api.test.local`)"
