@@ -1,59 +1,49 @@
-version: '3.8'
-
 networks:
   proxy:
-    driver: bridge
   internal:
-    driver: bridge
 
 volumes:
   postgres_data:
   redis_data:
 
 services:
-  # 🚪 The Doorman (Traefik)
   traefik:
     image: traefik:v2.10
     container_name: traefik
     restart: always
     ports:
-      - "80:80"     # HTTP
-      - "443:443"   # HTTPS
+      - "80:80"
+      - "443:443"
     networks:
       - proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/acme.json:/acme.json
     command:
-      - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.letsencrypt.acme.email=your-email@example.com"
-      - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
-    labels:
-      - "traefik.enable=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/traefik/acme.json"
 
-  # 🗄️ Database
   postgres:
     image: postgres:15-alpine
-    container_name: postgres
     restart: always
     networks:
       - internal
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: your-strong-password-here
-    # NOT exposed to internet - only internal network
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
 
-  # 🚀 Redis (Optional - for caching)
   redis:
     image: redis:7-alpine
-    container_name: redis
     restart: always
     networks:
       - internal
@@ -62,18 +52,13 @@ services:
 
   app-1-backend:
     image: ahmaddev241/app-1-backend:latest
-    container_name: app-1-backend
     restart: always
     networks:
       - proxy
       - internal
-    environment:
-      DATABASE_URL: postgresql://postgres:your-strong-password-here@postgres:5432/app1_db
-      REDIS_URL: redis://redis:6379
-      PORT: 3000
+    env_file:
+      - .env
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app1.rule=Host(`api.app-1.example.com`)"
-      - "traefik.http.routers.app1.entrypoints=websecure"
-      - "traefik.http.routers.app1.tls.certresolver=letsencrypt"
-      - "traefik.http.services.app1.loadbalancer.server.port=3000"
+      - "traefik.http.routers.app1.rule=Host(`api.test.local`)"
+      - "traefik.http.routers.app1.entrypoints=web"
