@@ -63,5 +63,5 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app1.rule=PathPrefix(`/`)"
-      - "traefik.http.routers.app1.entrypoints=websecure"
+      - "traefik.http.routers.app1.entrypoints=web"
       # - "traefik.http.routers.app1.tls.certresolver=letsencrypt"
