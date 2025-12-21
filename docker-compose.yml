@@ -2,7 +2,7 @@ version: "3.9"
 
 networks:
   proxy:
-    name: proxy_network # Named network ensures consistency
+    name: proxy_network
   internal:
     driver: bridge
 
@@ -17,27 +17,18 @@ services:
     restart: always
     ports:
       - "80:80"
-      - "443:443"
-      - "8080:8080" # Dashboard ke liye
+      - "8080:8080" # Dashboard: http://157.230.36.151:8080
     networks:
       - proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/acme.json:/acme.json
     command:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      # Global HTTP to HTTPS redirect (Optional but recommended)
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--api.insecure=true"
       - "--api.dashboard=true"
       - "--log.level=DEBUG"
-      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL}"
-      - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
 
   postgres:
     image: postgres:15-alpine
@@ -68,7 +59,6 @@ services:
       - internal
     labels:
       - "traefik.enable=true"
-      # Host(`157.230.36.151`) ya fir PathPrefix use karein testing ke liye
       - "traefik.http.routers.app1.rule=PathPrefix(`/`)"
-      - "traefik.http.routers.app1.entrypoints=web" # Filhal 'web' use karein bina domain ke
+      - "traefik.http.routers.app1.entrypoints=web"
       - "traefik.http.services.app1.loadbalancer.server.port=3000"
