@@ -10,7 +10,7 @@ volumes:
 
 services:
   traefik:
-    image: traefik:v2.10
+    image: traefik:v2.11
     container_name: traefik
     restart: always
     ports:
@@ -21,6 +21,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/acme.json:/acme.json
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
     command:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
