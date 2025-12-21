@@ -53,15 +53,15 @@ services:
       - redis_data:/data
 
   app-1-backend:
-    image: ahmaddev241/app-1-backend:latest
-    restart: always
-    env_file:
-      - .env
-    networks:
-      - proxy
-      - internal
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.app1.rule=PathPrefix(`/`)"
-      - "traefik.http.routers.app1.entrypoints=web"
-      # - "traefik.http.routers.app1.tls.certresolver=letsencrypt"
+  image: ahmaddev241/app-1-backend:latest
+  restart: always
+  env_file:
+    - .env
+  networks:
+    - proxy
+    - internal
+  labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.app1.rule=PathPrefix(`/`)"
+    - "traefik.http.routers.app1.entrypoints=web"
+    - "traefik.http.services.app1.loadbalancer.server.port=3000"
