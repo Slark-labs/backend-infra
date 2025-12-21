@@ -2,7 +2,7 @@ version: "3.9"
 
 networks:
   proxy:
-    name: proxy_network  # Named network ensures consistency
+    name: proxy_network # Named network ensures consistency
   internal:
     driver: bridge
 
@@ -68,8 +68,7 @@ services:
       - internal
     labels:
       - "traefik.enable=true"
-      # Domain name yahan define karein (example.com ki jagah apna domain likhein)
-      - "traefik.http.routers.app1.rule=Host(`yourdomain.com`)" 
-      - "traefik.http.routers.app1.entrypoints=websecure"
-      - "traefik.http.routers.app1.tls.certresolver=letsencrypt"
+      # Host(`157.230.36.151`) ya fir PathPrefix use karein testing ke liye
+      - "traefik.http.routers.app1.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.app1.entrypoints=web" # Filhal 'web' use karein bina domain ke
       - "traefik.http.services.app1.loadbalancer.server.port=3000"
