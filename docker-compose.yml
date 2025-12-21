@@ -10,12 +10,13 @@ volumes:
 
 services:
   traefik:
-    image: traefik:v3.6.5
+    image: traefik:v2.11
     container_name: traefik
     restart: always
     ports:
       - "80:80"
       - "443:443"
+      - "8080:8080"
     networks:
       - proxy
     volumes:
@@ -28,6 +29,9 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--log.level=DEBUG"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL}"
@@ -62,9 +66,6 @@ services:
       - internal
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.app1.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.app1.rule=Host(`localhost`)"
       - "traefik.http.routers.app1.entrypoints=web"
-      - "traefik.http.routers.app1.service=app1"
-      - "traefik.http.routers.app1.middlewares=stripprefix"
-      - "traefik.http.middlewares.stripprefix.stripprefix.prefixes=/"
       - "traefik.http.services.app1.loadbalancer.server.port=3000"
