@@ -64,4 +64,4 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.app1.rule=Host(`api.yourdomain.com`)"
       - "traefik.http.routers.app1.entrypoints=websecure"
-      - "traefik.http.routers.app1.tls.certresolver=letsencrypt"
+      # - "traefik.http.routers.app1.tls.certresolver=letsencrypt"
