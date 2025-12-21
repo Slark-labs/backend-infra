@@ -64,4 +64,5 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.app1.rule=PathPrefix(`/`)"
       - "traefik.http.routers.app1.entrypoints=web"
+      - "traefik.http.routers.app1.service=app1"
       - "traefik.http.services.app1.loadbalancer.server.port=3000"
