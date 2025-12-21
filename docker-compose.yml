@@ -26,8 +26,6 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-      # - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      # - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL}"
@@ -53,15 +51,15 @@ services:
       - redis_data:/data
 
   app-1-backend:
-  image: ahmaddev241/app-1-backend:latest
-  restart: always
-  env_file:
-    - .env
-  networks:
-    - proxy
-    - internal
-  labels:
-    - "traefik.enable=true"
-    - "traefik.http.routers.app1.rule=PathPrefix(`/`)"
-    - "traefik.http.routers.app1.entrypoints=web"
-    - "traefik.http.services.app1.loadbalancer.server.port=3000"
+    image: ahmaddev241/app-1-backend:latest
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - proxy
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app1.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.app1.entrypoints=web"
+      - "traefik.http.services.app1.loadbalancer.server.port=3000"
