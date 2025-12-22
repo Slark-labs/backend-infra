@@ -119,9 +119,6 @@ services:
     image: ahmaddev241/app-3-backend:latest
     container_name: app-3-backend
     restart: always
-    networks:
-      - proxy_network
-      - internal
     env_file:
       - .env
     networks:
