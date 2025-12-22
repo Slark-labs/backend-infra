@@ -116,3 +116,32 @@ services:
       - "traefik.http.routers.app2.tls=true"
       - "traefik.http.routers.app2.tls.certresolver=le"
       - "traefik.http.services.app2.loadbalancer.server.port=3000"
+    app-3-backend:
+    image: ahmaddev241/app-3-backend:latest
+    container_name: app-3-backend
+    restart: always
+    environment:
+      CLIENT_ID: ${CLIENT_ID}
+      CLIENT_SECRET: ${CLIENT_SECRET}
+      REDIRECT_URI: ${REDIRECT_URI}
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_KEY: ${SUPABASE_KEY}
+
+    env_file:
+      - .env
+    networks:
+      - proxy_network
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy_network"
+      - "traefik.http.routers.app3.rule=Host(`test-3.slarklabs.com`)"
+      - "traefik.http.routers.app3.entrypoints=websecure"
+      - "traefik.http.routers.app3.tls=true"
+      - "traefik.http.routers.app3.tls.certresolver=le"
+      - "traefik.http.services.app3.loadbalancer.server.port=3000"
