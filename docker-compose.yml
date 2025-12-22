@@ -111,8 +111,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy_network"
-      - "traefik.http.routers.app1.rule=Host(`test-2.slarklabs.com`)"
-      - "traefik.http.routers.app1.entrypoints=websecure"
-      - "traefik.http.routers.app1.tls=true"
-      - "traefik.http.routers.app1.tls.certresolver=le"
-      - "traefik.http.services.app1.loadbalancer.server.port=3000"
+      - "traefik.http.routers.app2.rule=Host(`test-2.slarklabs.com`)"
+      - "traefik.http.routers.app2.entrypoints=websecure"
+      - "traefik.http.routers.app2.tls=true"
+      - "traefik.http.routers.app2.tls.certresolver=le"
+      - "traefik.http.services.app2.loadbalancer.server.port=3000"
