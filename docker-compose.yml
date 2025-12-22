@@ -119,12 +119,9 @@ services:
     image: ahmaddev241/app-3-backend:latest
     container_name: app-3-backend
     restart: always
-    environment:
-      CLIENT_ID: ${CLIENT_ID}
-      CLIENT_SECRET: ${CLIENT_SECRET}
-      REDIRECT_URI: ${REDIRECT_URI}
-      SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_KEY: ${SUPABASE_KEY}
+    networks:
+      - proxy_network
+      - internal
     env_file:
       - .env
     networks:
