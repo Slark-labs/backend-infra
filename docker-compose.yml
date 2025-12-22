@@ -18,20 +18,28 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "443:443"
       - "8080:8080"
     networks:
       - proxy_network
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik:/letsencrypt
     command:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=proxy_network"
+
       - "--entrypoints.web.address=:80"
-      - "--api.insecure=true"
+      - "--entrypoints.websecure.address=:443"
+
+      - "--certificatesresolvers.le.acme.httpchallenge=true"
+      - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.le.acme.email=ah167493991@gmail.com"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+
       - "--api.dashboard=true"
-      - "--log.level=DEBUG"
-      - "--accesslog=true"
+      - "--api.insecure=true"
 
   postgres:
     image: postgres:15-alpine
@@ -81,6 +89,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy_network"
-      - "traefik.http.routers.app2.rule=Host(`test-1.slarklabs.com`)"
-      - "traefik.http.routers.app2.entrypoints=web"
-      - "traefik.http.services.app2.loadbalancer.server.port=3000"
+      - "traefik.http.routers.app1.rule=Host(`test-1.slarklabs.com`)"
+      - "traefik.http.routers.app1.entrypoints=websecure"
+      - "traefik.http.routers.app1.tls=true"
+      - "traefik.http.routers.app1.tls.certresolver=le"
+      - "traefik.http.services.app1.loadbalancer.server.port=3000"
