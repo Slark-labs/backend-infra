@@ -29,15 +29,12 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=proxy_network"
-
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-
       - "--certificatesresolvers.le.acme.httpchallenge=true"
       - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.le.acme.email=ah167493991@gmail.com"
       - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
-
       - "--api.dashboard=true"
       - "--api.insecure=true"
 
@@ -94,6 +91,7 @@ services:
       - "traefik.http.routers.app1.tls=true"
       - "traefik.http.routers.app1.tls.certresolver=le"
       - "traefik.http.services.app1.loadbalancer.server.port=3000"
+
   app-2-backend:
     image: ahmaddev241/app-2-backend:latest
     container_name: app-2-backend
@@ -116,7 +114,8 @@ services:
       - "traefik.http.routers.app2.tls=true"
       - "traefik.http.routers.app2.tls.certresolver=le"
       - "traefik.http.services.app2.loadbalancer.server.port=3000"
-    app-3-backend:
+
+  app-3-backend:
     image: ahmaddev241/app-3-backend:latest
     container_name: app-3-backend
     restart: always
@@ -126,7 +125,6 @@ services:
       REDIRECT_URI: ${REDIRECT_URI}
       SUPABASE_URL: ${SUPABASE_URL}
       SUPABASE_KEY: ${SUPABASE_KEY}
-
     env_file:
       - .env
     networks:
