@@ -16,10 +16,6 @@ It handles:
 ```
 backend-infra/
 ├── docker-compose.yml         # Main Compose file
-├── env/                       # Environment files (secrets)
-│   ├── app-1-backend.env.example
-│   ├── app-2-backend.env.example
-│   └── app-3-backend.env.example
 ├── traefik/                   # Traefik configs & certificates
 │   ├── traefik.yml
 │   └── acme.json
@@ -27,7 +23,60 @@ backend-infra/
 ```
 
 - `.env` files are **never committed** to Git.
-- `.env.example` files document required variables.
+
+---
+
+## Environment Variables
+
+All backend environment variables are stored **securely on the VPS** in `/opt/infra/env/`.  
+Each backend app has its **own env file**.
+
+### Folder Structure on VPS
+
+```bash
+/opt/infra/env/
+├── app-1-backend.env
+├── app-2-backend.env
+└── app-3-backend.env
+```
+
+### Creating the Folder
+
+```bash
+sudo mkdir -p /opt/infra/env
+sudo chown -R $USER:$USER /opt/infra/env
+sudo chmod 700 /opt/infra/env
+```
+
+- `chown` → you become the owner of the folder
+- `chmod 700` → only you can read/write/execute (secure)
+
+### Creating Env Files
+
+Example for `app-1-backend`:
+
+```bash
+nano /opt/infra/env/app-1-backend.env
+```
+
+Add your environment variables:
+
+```env
+PORT=3000
+DATABASE_URL=postgres://postgres:password@postgres:5432/dbname
+JWT_SECRET=yourjwtsecret
+```
+
+Save the file. Repeat for other apps.
+
+### Using Env Files in Docker Compose
+
+Reference the full path in `docker-compose.yml`:
+
+```yaml
+env_file:
+  - /opt/infra/env/app-1-backend.env
+```
 
 ---
 
@@ -41,7 +90,7 @@ app-new-backend:
   image: yourdockerhub/app-new-backend:latest
   restart: always
   env_file:
-    - ./env/app-new-backend.env
+    - /opt/infra/env/app-new-backend.env
   networks:
     - proxy_network
     - internal
@@ -60,13 +109,11 @@ app-new-backend:
     - "traefik.http.services.appnew.loadbalancer.server.port=3000"
 ```
 
-3. Create `.env` file from example:
+3. Create `.env` file on VPS:
 
 ```bash
-cd env
-cp app-new-backend.env.example app-new-backend.env
-nano app-new-backend.env
-chmod 600 app-new-backend.env
+nano /opt/infra/env/app-new-backend.env
+chmod 600 /opt/infra/env/app-new-backend.env
 ```
 
 4. Start or update the service:
@@ -74,15 +121,6 @@ chmod 600 app-new-backend.env
 ```bash
 docker compose up -d app-new-backend
 ```
-
----
-
-## Environment Variables
-
-- Each app has its own `.env` file.
-- `.env.example` shows required variables only.
-- Docker Compose loads env files at runtime.
-- Never commit `.env` files to Git.
 
 ---
 
