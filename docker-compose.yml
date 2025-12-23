@@ -74,7 +74,7 @@ services:
     container_name: app-1-backend
     restart: always
     env_file:
-      - .env
+      - /opt/infra/env/app-1-backend.env
     networks:
       - proxy_network
       - internal
@@ -97,7 +97,7 @@ services:
     container_name: app-2-backend
     restart: always
     env_file:
-      - .env
+      - /opt/infra/env/app-2-backend.env
     networks:
       - proxy_network
       - internal
