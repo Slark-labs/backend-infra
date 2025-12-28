@@ -81,9 +81,9 @@ env_file:
 ---
 
 ## Adding a New Backend App
-
-1. Push your backend Docker image to Docker Hub.
-2. Add a new service in `docker-compose.yml`:
+example 1
+1. Add a new service in `docker-compose.yml`:
+2. Push your backend Docker image to Docker Hub.
 
 ```yaml
 app-new-backend:
@@ -160,7 +160,20 @@ docker compose logs app-1-backend
 - Keep Traefik labels correct for each domain.
 
 ---
+## Complete Flow
 
+1. SSH into VPS
+2. Create `/opt/infra/env/` folder with proper permissions
+3. Clone this infrastructure repository
+4. Create `.env` file for your app in `/opt/infra/env/`
+5. Add service definition in `docker-compose.yml`
+6. Configure Traefik labels with correct domain
+7. Push Docker image to Docker Hub (from backend repo)
+8. Pull latest images on VPS (optional )
+9. Start service with `docker compose up -d` (optional)
+10. Verify service is running and accessible
+
+---
 ## License
 
 MIT
