@@ -16,11 +16,30 @@ A production-ready infrastructure for deploying multiple backend applications on
 
 ### 1. VPS Initial Setup
 
+**Option A: Fully Automated (Recommended)**
+
 ```bash
-# SSH into your VPS and run the setup script
+# Run the script directly - it does everything automatically!
 curl -fsSL https://raw.githubusercontent.com/yourusername/backend-infra/main/setup-vps.sh | bash
 
-# Or clone manually:
+# OR with your repository URL:
+curl -fsSL https://raw.githubusercontent.com/yourusername/backend-infra/main/setup-vps.sh | bash -s https://github.com/yourusername/backend-infra.git
+```
+
+**What the automated script does:**
+
+- ✅ Generates secure passwords automatically
+- ✅ Handles Docker installation conflicts
+- ✅ Creates all directories and files
+- ✅ Sets proper permissions
+- ✅ Clones your repository (if URL provided)
+- ✅ Provides all credentials you need
+- ✅ Displays everything you need for GitHub secrets
+
+**Option B: Manual Setup**
+
+```bash
+# Clone manually first, then run script
 git clone https://github.com/yourusername/backend-infra.git /opt/backend-infra
 cd /opt/backend-infra
 chmod +x setup-vps.sh && ./setup-vps.sh
@@ -343,6 +362,31 @@ curl https://your-app.example.com/health
 
 ## 🐛 Troubleshooting
 
+### Docker Installation Issues
+
+**"containerd.io conflicts with containerd" error:**
+
+- This is normal and automatically resolved by the setup script
+- The script removes conflicting packages and installs Docker properly
+- If manual installation is needed:
+
+```bash
+# Remove conflicting packages
+sudo apt remove -y docker docker-engine docker.io containerd runc
+
+# Add Docker repository
+sudo apt update
+sudo apt install -y ca-certificates curl gnupg lsb-release
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
 ### Deployment Issues
 
 **GitHub Actions fails:**
@@ -434,8 +478,8 @@ docker image prune -f
 
 ### Initial Setup
 
-- [ ] Run `setup-vps.sh` on your VPS
-- [ ] Generate and set secure passwords in `/opt/infra/env/`
+- [ ] Run `setup-vps.sh` on your VPS (it does everything automatically!)
+- [ ] Save the generated passwords securely (script displays them)
 - [ ] Configure SSH keys for GitHub Actions
 - [ ] Add GitHub secrets to all repositories
 - [ ] Start infrastructure with `docker compose up -d`
