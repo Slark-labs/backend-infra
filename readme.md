@@ -180,13 +180,13 @@ JWT_SECRET=your_unique_jwt_secret
 
 **Database Isolation:** Each app should use its own database name (e.g., `app1_db`, `app2_db`, `myapp_db`) for proper isolation and to avoid conflicts between applications. This prevents one app from accidentally accessing or modifying another app's data.
 
-**Creating Databases:** PostgreSQL databases need to be created manually. After setting up the environment file, create the database:
+**Creating Databases:** For apps using the BACKEND_STARTER_TEMP template, databases are created automatically on first startup. For custom apps, create manually:
 
 ```bash
 # SSH to VPS
 ssh root@your-vps
 
-# Create the database
+# Create the database (only needed for non-template apps)
 docker compose exec postgres createdb -U postgres your_app_db
 
 # Verify
@@ -315,12 +315,14 @@ For the fastest way to create a new backend application, use the **BACKEND_START
 ### Quick Setup with Template
 
 1. **Clone the template:**
+
    ```bash
    git clone https://github.com/yourusername/BACKEND_STARTER_TEMP.git your-new-app
    cd your-new-app
    ```
 
 2. **Customize for your app:**
+
    ```bash
    # Update package.json name
    # Change service names in index.js
