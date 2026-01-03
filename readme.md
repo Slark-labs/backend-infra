@@ -180,6 +180,19 @@ JWT_SECRET=your_unique_jwt_secret
 
 **Database Isolation:** Each app should use its own database name (e.g., `app1_db`, `app2_db`, `myapp_db`) for proper isolation and to avoid conflicts between applications. This prevents one app from accidentally accessing or modifying another app's data.
 
+**Creating Databases:** PostgreSQL databases need to be created manually. After setting up the environment file, create the database:
+
+```bash
+# SSH to VPS
+ssh root@your-vps
+
+# Create the database
+docker compose exec postgres createdb -U postgres your_app_db
+
+# Verify
+docker compose exec postgres psql -U postgres -l
+```
+
 ### Security Best Practices
 
 - Use `openssl rand` to generate strong passwords
