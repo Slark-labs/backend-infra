@@ -86,6 +86,29 @@ services:
       - "traefik.http.routers.app1.tls.certresolver=le"
       - "traefik.http.services.app1.loadbalancer.server.port=3000"
 
+  app-2-backend:
+    image: abdul32/app-2-backend:latest
+    container_name: app-2-backend
+    restart: always
+    env_file:
+      - /opt/infra/env/app-2-backend.env
+    networks:
+      - proxy_network
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy_network"
+      - "traefik.http.routers.app2.rule=Host(`test-2.slarklabs.com`)"
+      - "traefik.http.routers.app2.entrypoints=websecure"
+      - "traefik.http.routers.app2.tls=true"
+      - "traefik.http.routers.app2.tls.certresolver=le"
+      - "traefik.http.services.app2.loadbalancer.server.port=3000"
+
   # Template for additional applications
   # Copy and customize this section for each new application
   # Replace 'your-app' with your actual app name throughout
