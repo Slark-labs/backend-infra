@@ -31,9 +31,29 @@ log_error() {
 
 # Check if running as root or with sudo
 if [[ $EUID -eq 0 ]]; then
-   log_error "This script should NOT be run as root or with sudo"
-   log_info "Run it as your regular user: ./setup-vps.sh"
-   exit 1
+   log_warning "⚠️  WARNING: You're running as root!"
+   log_info "While possible, it's NOT recommended to run this script as root."
+   log_info ""
+   log_info "🔍 WHY NOT ROOT:"
+   log_info "• Security risk - scripts running as root can damage your system"
+   log_info "• Principle of least privilege - use regular user when possible"
+   log_info "• Docker will be configured for your user account"
+   log_info ""
+   log_info "✅ RECOMMENDED: Run as regular user with sudo when needed"
+   log_info "Example: ssh youruser@your-vps, then run the script"
+   log_info ""
+   read -p "Do you want to continue anyway? (y/N): " -r
+   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+       log_info "Exiting... Please run as regular user."
+       exit 1
+   fi
+   log_warning "Continuing as root... Use at your own risk!"
+fi
+
+# Check if we're running via curl pipe (common issue)
+if [[ -z "$0" || "$0" == "bash" ]] && [[ -n "$BASH_SOURCE" ]]; then
+    log_info "Detected script running via curl pipe - this is fine!"
+    log_info "Continuing with setup..."
 fi
 
 echo ""

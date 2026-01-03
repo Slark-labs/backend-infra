@@ -14,6 +14,33 @@ A production-ready infrastructure for deploying multiple backend applications on
 
 ## 🚀 Quick Start
 
+### 0. SSH Setup for Root User
+
+**Set up SSH key access for root (required for GitHub Actions):**
+
+```bash
+# On your VPS as root
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+
+# Add your SSH public key
+echo "your-ssh-public-key-here" >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+
+# Test from local machine
+ssh -i ~/.ssh/do-key root@157.230.36.151
+```
+
+**If you get "Permission denied (publickey)":**
+
+```bash
+# Get your public key
+cat ~/.ssh/do-key.pub
+
+# Add it to VPS (one command)
+ssh root@157.230.36.151 'echo "your-public-key-content" >> ~/.ssh/authorized_keys'
+```
+
 ### 1. VPS Initial Setup
 
 **Option A: Fully Automated (Recommended)**
@@ -199,7 +226,7 @@ Add these to **every repository** (infra + all app repos):
 DOCKER_USERNAME=your_dockerhub_username
 DOCKER_PASSWORD=your_dockerhub_password
 VPS_IP=your.vps.ip.address
-VPS_USERNAME=root  # or your SSH username
+VPS_USERNAME=root  # Use root for all deployments
 VPS_SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY-----
 ...your private key content...
 -----END OPENSSH PRIVATE KEY-----
@@ -394,6 +421,7 @@ sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin d
 - Check secrets are added correctly
 - Verify SSH key has proper permissions
 - Ensure VPS_IP and credentials are correct
+- **CRITICAL:** Make sure VPS_USERNAME is set to 'root'
 
 **Container won't start:**
 
@@ -478,10 +506,10 @@ docker image prune -f
 
 ### Initial Setup
 
-- [ ] Run `setup-vps.sh` on your VPS (it does everything automatically!)
+- [ ] Set up SSH key access for root user
+- [ ] Run `setup-vps.sh` on your VPS as root (it will warn but allow)
 - [ ] Save the generated passwords securely (script displays them)
-- [ ] Configure SSH keys for GitHub Actions
-- [ ] Add GitHub secrets to all repositories
+- [ ] Add GitHub secrets using VPS_USERNAME=root
 - [ ] Start infrastructure with `docker compose up -d`
 
 ### Testing
