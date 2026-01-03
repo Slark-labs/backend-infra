@@ -256,8 +256,8 @@ cat ~/.ssh/vps_deploy
 # Test your app locally before pushing
 cd your-app-repo
 npm install
-npm start
-# Visit: http://localhost:3000/health
+npm run dev
+curl http://localhost:3000/health
 ```
 
 ### Production Testing
@@ -293,7 +293,40 @@ docker stats
 
 ---
 
-## 🔧 Adding New Applications
+## 🚀 Using Backend Starter Template
+
+For the fastest way to create a new backend application, use the **BACKEND_STARTER_TEMP** template:
+
+### Quick Setup with Template
+
+1. **Clone the template:**
+   ```bash
+   git clone https://github.com/yourusername/BACKEND_STARTER_TEMP.git your-new-app
+   cd your-new-app
+   ```
+
+2. **Customize for your app:**
+   ```bash
+   # Update package.json name
+   # Change service names in index.js
+   # Update image names in .github/workflows/deploy.yml
+   ```
+
+3. **Follow the template's README** for complete deployment instructions
+
+### Benefits
+
+- ✅ **Pre-configured** Express server with health checks
+- ✅ **Working CI/CD** pipeline with external health checks
+- ✅ **Production-ready** Docker setup
+- ✅ **SSL ready** (works with your Traefik setup)
+- ✅ **Database integrated** (PostgreSQL + Redis)
+
+The template is already tested and working with this infrastructure!
+
+---
+
+## 🔧 Adding New Applications (Manual)
 
 ### 1. Create App Repository
 
@@ -511,6 +544,7 @@ docker image prune -f
 - [ ] Save the generated passwords securely (script displays them)
 - [ ] Add GitHub secrets using VPS_USERNAME=root
 - [ ] Start infrastructure with `docker compose up -d`
+- [ ] **Optional:** Clone BACKEND_STARTER_TEMP for creating new apps
 
 ### Testing
 
