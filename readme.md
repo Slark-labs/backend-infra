@@ -173,10 +173,12 @@ POSTGRES_PASSWORD=your_secure_postgres_password
 ```env
 PORT=3000
 NODE_ENV=production
-DATABASE_URL=postgres://postgres:your_password@postgres:5432/app_database
+DATABASE_URL=postgres://postgres:your_password@postgres:5432/your_app_database
 REDIS_URL=redis://redis:6379
 JWT_SECRET=your_unique_jwt_secret
 ```
+
+**Database Isolation:** Each app should use its own database name (e.g., `app1_db`, `app2_db`, `myapp_db`) for proper isolation and to avoid conflicts between applications. This prevents one app from accidentally accessing or modifying another app's data.
 
 ### Security Best Practices
 
