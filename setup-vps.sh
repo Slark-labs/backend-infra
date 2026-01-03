@@ -5,6 +5,21 @@
 
 set -e  # Exit on any error
 
+# Parse command line arguments
+FORCE_ROOT=false
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --force-root)
+            FORCE_ROOT=true
+            shift
+            ;;
+        *)
+            # Unknown option, pass to script logic
+            break
+            ;;
+    esac
+done
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -31,23 +46,34 @@ log_error() {
 
 # Check if running as root or with sudo
 if [[ $EUID -eq 0 ]]; then
-   log_warning "⚠️  WARNING: You're running as root!"
-   log_info "While possible, it's NOT recommended to run this script as root."
-   log_info ""
-   log_info "🔍 WHY NOT ROOT:"
-   log_info "• Security risk - scripts running as root can damage your system"
-   log_info "• Principle of least privilege - use regular user when possible"
-   log_info "• Docker will be configured for your user account"
-   log_info ""
-   log_info "✅ RECOMMENDED: Run as regular user with sudo when needed"
-   log_info "Example: ssh youruser@your-vps, then run the script"
-   log_info ""
-   read -p "Do you want to continue anyway? (y/N): " -r
-   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-       log_info "Exiting... Please run as regular user."
-       exit 1
+   if [[ "$FORCE_ROOT" != "true" ]]; then
+       log_warning "⚠️  WARNING: You're running as root!"
+       log_info "While possible, it's NOT recommended to run this script as root."
+       log_info ""
+       log_info "🔍 WHY NOT ROOT:"
+       log_info "• Security risk - scripts running as root can damage your system"
+       log_info "• Principle of least privilege - use regular user when possible"
+       log_info "• Docker will be configured for your user account"
+       log_info ""
+       log_info "✅ RECOMMENDED: Run as regular user with sudo when needed"
+       log_info "Example: ssh youruser@your-vps, then run the script"
+       log_info ""
+
+       # Check if running interactively
+       if [[ -t 0 ]]; then
+           read -p "Do you want to continue anyway? (y/N): " -r
+           if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+               log_info "Exiting... Please run as regular user."
+               exit 1
+           fi
+       else
+           log_error "Script is running non-interactively as root. Exiting for safety."
+           log_info "Please run this script as a regular user, or use --force-root flag if you must use root."
+           exit 1
+       fi
+   else
+       log_warning "⚠️  Running as root with --force-root flag. Use at your own risk!"
    fi
-   log_warning "Continuing as root... Use at your own risk!"
 fi
 
 # Check if we're running via curl pipe (common issue)
