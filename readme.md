@@ -1,79 +1,7 @@
 # Backend Infrastructure 🚀
 
-A production-ready infrastructure template for deploying multiple backend applications on a single VPS with automatic CI/CD, SSL certificates, and secure environment management.
+A production-ready infrastructure for deploying multiple backend applications on a single VPS with automatic CI/CD, SSL certificates, and secure environment management.
 
-## 📋 Using as Template
-
-This repository is designed to be used as a **GitHub template**. To create your own infrastructure:
-
-### Making This Repository a Template
-
-1. **Go to repository Settings** → **General** → **Template repository**
-2. **Check "Template repository"**
-3. **Save changes**
-
-### Creating New Infrastructure from Template
-
-1. **Click "Use this template"** (green button on repository page)
-2. **Name your new repository** (e.g., `my-project-infra`)
-3. **Clone and customize** for your needs
-4. **Follow the setup guide** below
-
-**Why use this template?**
-- ✅ **Battle-tested configuration** from working deployments
-- ✅ **Complete CI/CD setup** ready to use
-- ✅ **SSL certificates** pre-configured
-- ✅ **Database + Redis** infrastructure included
-- ✅ **Multi-app support** built-in
-
-### Customizing for Your Project
-
-After creating from template, update these files:
-
-#### 1. **Traefik Configuration** (`traefik/traefik.yml`)
-```yaml
-certificatesResolvers:
-  le:
-    acme:
-      email: your-email@example.com  # ← Update with your email
-```
-
-#### 2. **GitHub Actions** (`.github/workflows/deploy-infra.yml`)
-```yaml
-# Update repository reference if needed
-# The workflow is already generic and should work as-is
-```
-
-#### 3. **README Updates**
-- Update repository URLs in documentation
-- Change example domain names
-- Update contact information
-
-#### 4. **Docker Compose** (`docker-compose.yml`)
-- Update any hardcoded references
-- Modify service configurations as needed
-
-#### 5. **Setup Script** (`setup-vps.sh`)
-- Review for any project-specific customizations
-- The script is designed to be generic and work out-of-the-box
-
-### Template vs Working Infrastructure
-
-**This repository serves dual purposes:**
-
-1. **🛠️ Template Repository**: Use "Use this template" to create new infrastructure repos
-2. **🏗️ Working Infrastructure**: This specific repo manages your current VPS deployment
-
-**When using as template:**
-- Create new repository from template
-- Customize for your specific project needs
-- Deploy to a new VPS or separate environment
-- Each template instance is independent
-
-**For your current setup:**
-- This repository already manages `test-1.slarklabs.com` and `test-2.slarklabs.com`
-- Continue using this repo for your existing applications
-- Use the template for new projects/environments
 
 ## ✨ Features
 
@@ -381,40 +309,6 @@ docker stats
 
 ---
 
-## 🚀 Using Backend Starter Template
-
-For the fastest way to create a new backend application, use the **BACKEND_STARTER_TEMP** template:
-
-### Quick Setup with Template
-
-1. **Clone the template:**
-
-   ```bash
-   git clone https://github.com/yourusername/BACKEND_STARTER_TEMP.git your-new-app
-   cd your-new-app
-   ```
-
-2. **Customize for your app:**
-
-   ```bash
-   # Update package.json name
-   # Change service names in index.js
-   # Update image names in .github/workflows/deploy.yml
-   ```
-
-3. **Follow the template's README** for complete deployment instructions
-
-### Benefits
-
-- ✅ **Pre-configured** Express server with health checks
-- ✅ **Working CI/CD** pipeline with external health checks
-- ✅ **Production-ready** Docker setup
-- ✅ **SSL ready** (works with your Traefik setup)
-- ✅ **Database integrated** (PostgreSQL + Redis)
-
-The template is already tested and working with this infrastructure!
-
----
 
 ## 🔧 Adding New Applications (Manual)
 
