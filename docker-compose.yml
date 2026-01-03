@@ -71,16 +71,40 @@ services:
       timeout: 3s
       retries: 5
 
-  # Example backend application service
-  # Copy and customize this section for each of your applications
+  # App-1 Backend Service
+  app-1-backend:
+    image: abdul32/app-1-backend:latest
+    container_name: app-1-backend
+    restart: always
+    env_file:
+      - /opt/infra/env/app-1-backend.env
+    networks:
+      - proxy_network
+      - internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy_network"
+      - "traefik.http.routers.app1.rule=Host(`test-1.slarklabs.com`)"
+      - "traefik.http.routers.app1.entrypoints=websecure"
+      - "traefik.http.routers.app1.tls=true"
+      - "traefik.http.routers.app1.tls.certresolver=le"
+      - "traefik.http.services.app1.loadbalancer.server.port=3000"
+
+  # Template for additional applications
+  # Copy and customize this section for each new application
   # Replace 'your-app' with your actual app name throughout
 
-  # your-first-app-backend:
-  #   image: yourdockerhub/your-first-app-backend:latest
-  #   container_name: your-first-app-backend
+  # your-app-backend:
+  #   image: abdul32/your-app-backend:latest
+  #   container_name: your-app-backend
   #   restart: always
   #   env_file:
-  #     - /opt/infra/env/your-first-app-backend.env
+  #     - /opt/infra/env/your-app-backend.env
   #   networks:
   #     - proxy_network
   #     - internal
@@ -92,16 +116,8 @@ services:
   #   labels:
   #     - "traefik.enable=true"
   #     - "traefik.docker.network=proxy_network"
-  #     - "traefik.http.routers.yourfirstapp.rule=Host(`your-first-app.example.com`)"
-  #     - "traefik.http.routers.yourfirstapp.entrypoints=websecure"
-  #     - "traefik.http.routers.yourfirstapp.tls=true"
-  #     - "traefik.http.routers.yourfirstapp.tls.certresolver=le"
-  #     - "traefik.http.services.yourfirstapp.loadbalancer.server.port=3000"
-
-  # Uncomment and customize the above section for your applications
-  # Each app gets its own service definition with unique:
-  # - Image name (yourdockerhub/your-app-name-backend:latest)
-  # - Container name (your-app-name-backend)
-  # - Environment file (/opt/infra/env/your-app-name-backend.env)
-  # - Domain (your-app-name.example.com)
-  # - Router/service names (yourappname)
+  #     - "traefik.http.routers.yourapp.rule=Host(`your-app.example.com`)"
+  #     - "traefik.http.routers.yourapp.entrypoints=websecure"
+  #     - "traefik.http.routers.yourapp.tls=true"
+  #     - "traefik.http.routers.yourapp.tls.certresolver=le"
+  #     - "traefik.http.services.yourapp.loadbalancer.server.port=3000"
