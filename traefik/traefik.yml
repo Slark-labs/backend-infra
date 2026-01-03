@@ -1,10 +1,22 @@
 entryPoints:
   web:
     address: ":80"
+  websecure:
+    address: ":443"
 
 providers:
   docker:
     exposedByDefault: false
+    network: proxy_network
+
+certificatesResolvers:
+  le:
+    acme:
+      email: abdul32@example.com
+      storage: /letsencrypt/acme.json
+      httpChallenge:
+        entryPoint: web
 
 api:
   dashboard: true
+  insecure: true

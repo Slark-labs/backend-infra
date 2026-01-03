@@ -24,19 +24,10 @@ services:
       - proxy_network
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/letsencrypt/traefik.yml:ro
       - ./traefik:/letsencrypt
     command:
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=proxy_network"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.le.acme.httpchallenge=true"
-      - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.le.acme.email=ah167493991@gmail.com"
-      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
-      - "--api.dashboard=true"
-      - "--api.insecure=true"
+      - "--configFile=/letsencrypt/traefik.yml"
 
   postgres:
     image: postgres:15-alpine
